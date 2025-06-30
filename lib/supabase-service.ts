@@ -150,7 +150,7 @@ export class SupabaseService {
 
   // Test connection
   static async testConnection() {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('users')
       .select('count')
       .limit(1)

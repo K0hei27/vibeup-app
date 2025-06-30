@@ -94,7 +94,7 @@ Guidelines:
         }
 
         // Ensure we have exactly 3 key phrases
-        const keyPhrases = result.keyPhrases.slice(0, 3).map((phrase: any) => ({
+        const keyPhrases = result.keyPhrases.slice(0, 3).map((phrase: { phrase?: string; explanation?: string }) => ({
           phrase: phrase.phrase || '',
           explanation: phrase.explanation || ''
         }))
@@ -103,7 +103,7 @@ Guidelines:
           transformedText: result.transformedText,
           keyPhrases
         }
-      } catch (parseError) {
+      } catch {
         console.error('Failed to parse AI response:', generatedText)
         
         // Fallback: Create a simple transformation

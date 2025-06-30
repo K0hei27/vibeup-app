@@ -31,7 +31,7 @@ export class MCPErrorHandler {
     return error
   }
 
-  static handleDatabaseError(error: any): MCPServiceResponse {
+  static handleDatabaseError(error: unknown): MCPServiceResponse {
     console.error('Database Error:', error)
 
     // Handle PostgreSQL specific errors
@@ -101,7 +101,7 @@ export class MCPErrorHandler {
     }
   }
 
-  static handleApiError(error: any, operation: string): MCPServiceResponse {
+  static handleApiError(error: unknown, operation: string): MCPServiceResponse {
     console.error(`MCP API Error during ${operation}:`, error)
 
     if (error instanceof Response) {
@@ -178,7 +178,7 @@ export const validators = {
     return null
   },
 
-  required: (value: any, fieldName: string): string | null => {
+  required: (value: unknown, fieldName: string): string | null => {
     if (value === null || value === undefined || value === '') {
       return `${fieldName} is required`
     }

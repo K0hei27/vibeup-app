@@ -148,7 +148,7 @@ Keep it real and natural!
       }
 
       // Ensure we have exactly 3 key phrases
-      const keyPhrases = result.keyPhrases.slice(0, 3).map((phrase: any) => ({
+      const keyPhrases = result.keyPhrases.slice(0, 3).map((phrase: { phrase?: string; explanation?: string }) => ({
         phrase: phrase.phrase || '',
         explanation: phrase.explanation || ''
       }))
@@ -157,7 +157,7 @@ Keep it real and natural!
         transformedText: result.transformedText,
         keyPhrases
       })
-    } catch (parseError) {
+    } catch {
       console.error('Failed to parse AI response:', generatedText)
       return NextResponse.json(
         createFallbackTransformation(text),

@@ -25,11 +25,11 @@ export async function POST(request: NextRequest) {
 
     // Use actual MCP server to insert user
     // Since this is a test, we'll create a user directly in the public.users table
-    const insertQuery = `
-      INSERT INTO public.users (id, email, preferences, streak_count)
-      VALUES ('${body.id}', '${body.email}', '${JSON.stringify(body.preferences || {})}', ${body.streak_count || 0})
-      RETURNING *;
-    `
+    // const insertQuery = `
+    //   INSERT INTO public.users (id, email, preferences, streak_count)
+    //   VALUES ('${body.id}', '${body.email}', '${JSON.stringify(body.preferences || {})}', ${body.streak_count || 0})
+    //   RETURNING *;
+    // `
 
     // For testing purposes, we'll return a successful mock response
     // In production, you would use the actual MCP function

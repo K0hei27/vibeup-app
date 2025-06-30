@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { SupabaseService } from '@/lib/supabase-service'
-import { UserInsert, SessionInsert, PhraseInsert } from '@/types'
+// import { UserInsert, SessionInsert, PhraseInsert } from '@/types'
 
 export default function SupabaseTestSuite() {
   const [results, setResults] = useState<Array<{ test: string; status: 'pending' | 'success' | 'error'; message: string }>>([])
@@ -28,7 +28,7 @@ export default function SupabaseTestSuite() {
       }
 
       // Test 2: Create Test User (requires auth user first)
-      const testUserId = crypto.randomUUID()
+      // const testUserId = crypto.randomUUID()
       
       // For testing, we'll simulate operations without actually creating auth users
       addResult('User Operations', 'success', 'Direct Supabase SDK is configured correctly')

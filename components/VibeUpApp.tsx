@@ -24,10 +24,10 @@ export default function VibeUpApp() {
   const [authPassword, setAuthPassword] = useState('')
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
-  const [currentSession, setCurrentSession] = useState<any>(null)
+  // const [currentSession, setCurrentSession] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [showHistory, setShowHistory] = useState(false)
-  const [sessionHistory, setSessionHistory] = useState<any[]>([])
+  const [sessionHistory, setSessionHistory] = useState<Array<Record<string, unknown>>>([])  
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const resultSectionRef = useRef<HTMLDivElement>(null)
@@ -65,14 +65,14 @@ export default function VibeUpApp() {
     return () => subscription.unsubscribe()
   }, [isHydrated])
 
-  const placeholderData = {
-    transformedText: "I'm finding it challenging to adapt to the frequently shifting deadlines and would appreciate more consistency in our timeline planning.",
-    keyPhrases: [
-      { phrase: "finding it challenging", explanation: "Acknowledges difficulty without blame" },
-      { phrase: "shifting deadlines", explanation: "Neutral way to describe changes" },
-      { phrase: "would appreciate", explanation: "Constructive request approach" }
-    ]
-  }
+  // const placeholderData = {
+  //   transformedText: "I'm finding it challenging to adapt to the frequently shifting deadlines and would appreciate more consistency in our timeline planning.",
+  //   keyPhrases: [
+  //     { phrase: "finding it challenging", explanation: "Acknowledges difficulty without blame" },
+  //     { phrase: "shifting deadlines", explanation: "Neutral way to describe changes" },
+  //     { phrase: "would appreciate", explanation: "Constructive request approach" }
+  //   ]
+  // }
 
   const transformText = async () => {
     if (!userInput.trim()) {
@@ -291,7 +291,7 @@ export default function VibeUpApp() {
       setAuthEmail('')
       setAuthPassword('')
       setShowAuth(false)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Auth error:', error)
       
       // Provide better error messages
@@ -502,7 +502,7 @@ export default function VibeUpApp() {
               <div className="auth-switch">
                 {authMode === 'login' ? (
                   <span>
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <button 
                       className="auth-link" 
                       onClick={() => {
@@ -563,13 +563,13 @@ export default function VibeUpApp() {
                     <div className="empty-submessage">Start expressing your thoughts to build your history!</div>
                   </div>
                 ) : (
-                  sessionHistory.map((session, index) => (
+                  sessionHistory.map((session) => (
                     <div key={session.id} className="history-item">
                       <div className="history-date">
                         {new Date(session.created_at).toLocaleDateString()}
                       </div>
                       <div className="history-original">
-                        "{session.original_text}"
+                        &quot;{session.original_text}&quot;
                       </div>
                       <div className="history-arrow">↓</div>
                       <div className="history-transformed">
