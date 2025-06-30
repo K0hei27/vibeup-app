@@ -11,7 +11,7 @@ interface KeyPhrase {
 }
 
 export default function VibeUpApp() {
-  const [userInput, setUserInput] = useState("I'm so annoyed that my boss keeps changing the deadline and I can't keep up")
+  const [userInput, setUserInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showResult, setShowResult] = useState(false)
   const [transformedText, setTransformedText] = useState("")
