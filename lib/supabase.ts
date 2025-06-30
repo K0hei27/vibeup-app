@@ -1,18 +1,27 @@
 import { createClient } from '@supabase/supabase-js'
 import { AuthUser } from '@/types'
 
-// Supabase client configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://jbleeibcemqugcrvoxsx.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpibGVlaWJjZW1xdWdjcnZveHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyODQ1MTcsImV4cCI6MjA2Njg2MDUxN30.5SyfswERDjIRC6hxTPnpwxpt7Rw3Q17wx1xxLl7D7wU'
+// Supabase client configuration - using hardcoded values for reliability
+const supabaseUrl = 'https://jbleeibcemqugcrvoxsx.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpibGVlaWJjZW1xdWdjcnZveHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyODQ1MTcsImV4cCI6MjA2Njg2MDUxN30.5SyfswERDjIRC6hxTPnpwxpt7Rw3Q17wx1xxLl7D7wU'
 
 console.log('🔧 Supabase Config Check:')
-console.log('- URL:', supabaseUrl ? 'Set' : 'Missing')
-console.log('- Key:', supabaseAnonKey ? 'Set' : 'Missing')
-console.log('- URL value:', supabaseUrl)
+console.log('- URL:', supabaseUrl)
+console.log('- Key length:', supabaseAnonKey.length)
 
-if (!supabaseUrl || supabaseUrl === 'undefined' || !supabaseAnonKey || supabaseAnonKey === 'undefined') {
-  console.error('❌ Supabase configuration error')
-  throw new Error(`Missing Supabase environment variables: URL=${!!supabaseUrl}, Key=${!!supabaseAnonKey}`)
+// Validate URL format
+try {
+  new URL(supabaseUrl)
+  console.log('✅ URL is valid')
+} catch (e) {
+  console.error('❌ Invalid Supabase URL:', supabaseUrl)
+  throw new Error('Invalid Supabase URL format')
+}
+
+// Validate key format  
+if (!supabaseAnonKey || supabaseAnonKey.length < 10) {
+  console.error('❌ Invalid Supabase key')
+  throw new Error('Invalid Supabase anon key')
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -21,18 +30,34 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export const auth = {
   // Sign up with email
   async signUp(email: string, password: string) {
-    return await supabase.auth.signUp({
-      email,
-      password,
-    })
+    console.log('🔐 Attempting signup with Supabase...')
+    try {
+      const result = await supabase.auth.signUp({
+        email,
+        password,
+      })
+      console.log('✅ Signup result:', result)
+      return result
+    } catch (error) {
+      console.error('❌ Signup error:', error)
+      throw error
+    }
   },
 
   // Sign in with email
   async signIn(email: string, password: string) {
-    return await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    console.log('🔐 Attempting signin with Supabase...')
+    try {
+      const result = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      console.log('✅ Signin result:', result)
+      return result
+    } catch (error) {
+      console.error('❌ Signin error:', error)
+      throw error
+    }
   },
 
   // Sign out
