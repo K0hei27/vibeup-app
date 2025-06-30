@@ -5,8 +5,14 @@ import { AuthUser } from '@/types'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://jbleeibcemqugcrvoxsx.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpibGVlaWJjZW1xdWdjcnZveHN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyODQ1MTcsImV4cCI6MjA2Njg2MDUxN30.5SyfswERDjIRC6hxTPnpwxpt7Rw3Q17wx1xxLl7D7wU'
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+console.log('🔧 Supabase Config Check:')
+console.log('- URL:', supabaseUrl ? 'Set' : 'Missing')
+console.log('- Key:', supabaseAnonKey ? 'Set' : 'Missing')
+console.log('- URL value:', supabaseUrl)
+
+if (!supabaseUrl || supabaseUrl === 'undefined' || !supabaseAnonKey || supabaseAnonKey === 'undefined') {
+  console.error('❌ Supabase configuration error')
+  throw new Error(`Missing Supabase environment variables: URL=${!!supabaseUrl}, Key=${!!supabaseAnonKey}`)
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
