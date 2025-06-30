@@ -123,7 +123,7 @@ export default function VibeUpApp() {
             transformed_text: result.transformedText,
             key_phrases: result.keyPhrases
           })
-          setCurrentSession(session)
+          // setCurrentSession(session)
         } catch (error) {
           console.error('Failed to save session:', error)
           console.error('Current user context:', currentUser)
@@ -650,12 +650,13 @@ export default function VibeUpApp() {
         }
 
         .sign-in-status.logged-in {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
           color: white;
           padding: 4px 12px;
           border-radius: 12px;
           font-weight: 700;
           letter-spacing: 0.5px;
+          box-shadow: 0 2px 8px rgba(8, 145, 178, 0.25);
         }
 
         .sign-in-status.logged-in:hover {
@@ -912,7 +913,7 @@ export default function VibeUpApp() {
 
         .save-button {
           width: 100%;
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
           color: white;
           border: none;
           padding: 16px;
@@ -924,7 +925,7 @@ export default function VibeUpApp() {
           animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 1.1s both;
           opacity: 0;
           letter-spacing: -0.01em;
-          box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+          box-shadow: 0 6px 20px rgba(8, 145, 178, 0.25);
         }
 
         .save-button.show {
@@ -937,11 +938,11 @@ export default function VibeUpApp() {
 
         .save-button:hover {
           transform: translateY(-1px);
-          box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+          box-shadow: 0 8px 25px rgba(8, 145, 178, 0.35);
         }
 
         .save-button.saved {
-          background: linear-gradient(135deg, #059669 0%, #047857 100%);
+          background: linear-gradient(135deg, #0e7490 0%, #155e75 100%);
           transform: scale(1.01);
         }
 
