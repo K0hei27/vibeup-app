@@ -673,7 +673,7 @@ export default function VibeUpApp() {
         /* Top Navigation Bar */
         .top-nav {
           background: #ffffff;
-          padding: calc(env(safe-area-inset-top, 20px) + 12px) 20px 12px 20px;
+          padding: calc(env(safe-area-inset-top, 20px) + 12px) calc(env(safe-area-inset-right, 20px)) 12px calc(env(safe-area-inset-left, 20px));
           border-bottom: 1px solid #f4f4f5;
           display: flex;
           justify-content: space-between;
@@ -682,6 +682,8 @@ export default function VibeUpApp() {
           top: 0;
           z-index: 100;
           min-height: 56px;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
         }
 
         .nav-left {
@@ -763,6 +765,8 @@ export default function VibeUpApp() {
           position: relative;
           min-height: 0;
           padding-bottom: env(safe-area-inset-bottom, 24px);
+          padding-left: env(safe-area-inset-left, 24px);
+          padding-right: env(safe-area-inset-right, 24px);
         }
 
         .app-container::before {

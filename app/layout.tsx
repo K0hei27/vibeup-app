@@ -32,7 +32,8 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "VibeUp"
-  }
+  },
+  themeColor: "#ffffff"
 };
 
 export const viewport: Viewport = {
@@ -52,8 +53,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* PWA Meta Tags */}
-        <meta name="theme-color" content="#000000" />
-        <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
       </head>
       <body className={`${inter.variable} antialiased`}>
         {children}
