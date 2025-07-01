@@ -544,7 +544,12 @@ export default function VibeUpApp() {
           <div className="history-modal-overlay" onClick={() => setShowHistory(false)}>
             <div className="history-modal" onClick={(e) => e.stopPropagation()}>
               <div className="history-header">
-                <h3 className="history-title">Your Transformations</h3>
+                <h3 className="history-title">My Collections</h3>
+                {sessionHistory.length > 0 && (
+                  <div className="progress-indicator">
+                    📚 {sessionHistory.length} sessions • 🎯 {sessionHistory.reduce((total, session) => total + (session.key_phrases?.length || 0), 0)} phrases learned
+                  </div>
+                )}
                 <button 
                   className="close-button"
                   onClick={() => setShowHistory(false)}
@@ -555,26 +560,54 @@ export default function VibeUpApp() {
               
               <div className="history-content">
                 {isLoadingHistory ? (
-                  <div className="loading-state">Loading your history...</div>
+                  <div className="loading-state">Loading your collections...</div>
                 ) : sessionHistory.length === 0 ? (
                   <div className="empty-state">
                     <div className="empty-icon">📝</div>
-                    <div className="empty-message">No transformations yet</div>
-                    <div className="empty-submessage">Start expressing your thoughts to build your history!</div>
+                    <div className="empty-message">No collections yet</div>
+                    <div className="empty-submessage">Start transforming thoughts to build your collection!</div>
                   </div>
                 ) : (
                   sessionHistory.map((session) => (
-                    <div key={session.id} className="history-item">
-                      <div className="history-date">
-                        {new Date(session.created_at).toLocaleDateString()}
+                    <div key={session.id} className="collection-card">
+                      <div className="collection-date">
+                        📅 {new Date(session.created_at).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
                       </div>
-                      <div className="history-original">
-                        &quot;{session.original_text}&quot;
+                      
+                      <div className="collection-section">
+                        <div className="section-label">💭 Original:</div>
+                        <div className="original-text">&quot;{session.original_text}&quot;</div>
                       </div>
-                      <div className="history-arrow">↓</div>
-                      <div className="history-transformed">
-                        {session.transformed_text}
+                      
+                      <div className="collection-section">
+                        <div className="section-label">✨ Transformed:</div>
+                        <div className="transformed-text">{session.transformed_text}</div>
                       </div>
+                      
+                      {session.key_phrases && session.key_phrases.length > 0 && (
+                        <div className="collection-section">
+                          <div className="section-label">🎯 Key Phrases ({session.key_phrases.length}):</div>
+                          <div className="phrases-list">
+                            {session.key_phrases.map((phrase, index) => (
+                              <div key={index} className="phrase-item" onClick={() => {
+                                // Highlight phrase when clicked
+                                const phraseElement = document.querySelector(`[data-phrase="${index}"]`);
+                                if (phraseElement) {
+                                  phraseElement.classList.add('phrase-highlighted');
+                                  setTimeout(() => phraseElement.classList.remove('phrase-highlighted'), 1500);
+                                }
+                              }}>
+                                <div className="phrase-text" data-phrase={index}>• &quot;{phrase.phrase}&quot;</div>
+                                <div className="phrase-explanation">→ {phrase.explanation}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -1243,6 +1276,17 @@ export default function VibeUpApp() {
           margin: 0;
         }
 
+        .progress-indicator {
+          font-size: 12px;
+          color: #71717a;
+          margin-top: 8px;
+          font-weight: 500;
+          background: #f9fafb;
+          padding: 6px 12px;
+          border-radius: 12px;
+          display: inline-block;
+        }
+
         .close-button {
           background: #f4f4f5;
           border: none;
@@ -1299,46 +1343,106 @@ export default function VibeUpApp() {
           line-height: 1.4;
         }
 
-        .history-item {
-          background: #f9fafb;
-          border-radius: 16px;
-          padding: 20px;
+        .collection-card {
+          background: #ffffff;
+          border-radius: 20px;
+          padding: 24px;
           margin-bottom: 16px;
-          border: 1px solid #f4f4f5;
-          transition: all 0.2s ease;
+          border: 1px solid #e4e4e7;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          transition: all 0.3s ease;
         }
 
-        .history-item:hover {
-          background: #f4f4f5;
+        .collection-card:hover {
+          border-color: #d4d4d8;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
           transform: translateY(-1px);
         }
 
-        .history-date {
+        .collection-date {
           font-size: 12px;
           color: #71717a;
-          margin-bottom: 12px;
-          font-weight: 500;
+          margin-bottom: 20px;
+          font-weight: 600;
+          padding: 4px 0;
         }
 
-        .history-original {
-          font-size: 15px;
+        .collection-section {
+          margin-bottom: 20px;
+        }
+
+        .collection-section:last-child {
+          margin-bottom: 0;
+        }
+
+        .section-label {
+          font-size: 14px;
+          font-weight: 700;
           color: #52525b;
-          font-style: italic;
           margin-bottom: 8px;
+          letter-spacing: -0.01em;
         }
 
-        .history-arrow {
-          text-align: center;
-          color: #3b82f6;
-          font-size: 16px;
-          margin: 8px 0;
+        .original-text {
+          font-size: 15px;
+          color: #71717a;
+          font-style: italic;
+          line-height: 1.5;
+          background: #f9fafb;
+          padding: 12px 16px;
+          border-radius: 12px;
+          border-left: 3px solid #e4e4e7;
         }
 
-        .history-transformed {
+        .transformed-text {
           font-size: 15px;
           color: #09090b;
           font-weight: 500;
-          line-height: 1.4;
+          line-height: 1.5;
+          background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+          padding: 12px 16px;
+          border-radius: 12px;
+          border-left: 3px solid #0891b2;
+        }
+
+        .phrases-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .phrase-item {
+          background: #fafafa;
+          border-radius: 12px;
+          padding: 12px 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          border: 1px solid #f4f4f5;
+        }
+
+        .phrase-item:hover {
+          background: #f4f4f5;
+          border-color: #e4e4e7;
+          transform: translateX(4px);
+        }
+
+        .phrase-text {
+          font-size: 14px;
+          font-weight: 600;
+          color: #18181b;
+          margin-bottom: 4px;
+        }
+
+        .phrase-explanation {
+          font-size: 13px;
+          color: #71717a;
+          font-style: italic;
+        }
+
+        .phrase-highlighted {
+          background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+          border-color: #f59e0b !important;
+          transform: scale(1.02) !important;
         }
       `}</style>
     </div>
