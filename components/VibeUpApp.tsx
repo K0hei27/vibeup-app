@@ -29,6 +29,7 @@ export default function VibeUpApp() {
   const [showHistory, setShowHistory] = useState(false)
   const [sessionHistory, setSessionHistory] = useState<Array<Record<string, unknown>>>([])  
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
   const [isHydrated, setIsHydrated] = useState(false)
   const resultSectionRef = useRef<HTMLDivElement>(null)
 
@@ -210,6 +211,16 @@ export default function VibeUpApp() {
     } finally {
       setIsLoadingHistory(false)
     }
+  }
+
+  const toggleExpanded = (sessionId: string) => {
+    const newExpanded = new Set(expandedItems)
+    if (newExpanded.has(sessionId)) {
+      newExpanded.delete(sessionId)
+    } else {
+      newExpanded.add(sessionId)
+    }
+    setExpandedItems(newExpanded)
   }
 
   const handleAuth = async () => {
@@ -568,48 +579,72 @@ export default function VibeUpApp() {
                     <div className="empty-submessage">Start transforming thoughts to build your collection!</div>
                   </div>
                 ) : (
-                  sessionHistory.map((session) => (
-                    <div key={session.id} className="collection-card">
-                      <div className="collection-date">
-                        📅 {new Date(session.created_at).toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric', 
-                          year: 'numeric' 
-                        })}
-                      </div>
-                      
-                      <div className="collection-section">
-                        <div className="section-label">💭 Original:</div>
-                        <div className="original-text">&quot;{session.original_text}&quot;</div>
-                      </div>
-                      
-                      <div className="collection-section">
-                        <div className="section-label">✨ Transformed:</div>
-                        <div className="transformed-text">{session.transformed_text}</div>
-                      </div>
-                      
-                      {session.key_phrases && session.key_phrases.length > 0 && (
-                        <div className="collection-section">
-                          <div className="section-label">🎯 Key Phrases ({session.key_phrases.length}):</div>
-                          <div className="phrases-list">
-                            {session.key_phrases.map((phrase, index) => (
-                              <div key={index} className="phrase-item" onClick={() => {
-                                // Highlight phrase when clicked
-                                const phraseElement = document.querySelector(`[data-phrase="${index}"]`);
-                                if (phraseElement) {
-                                  phraseElement.classList.add('phrase-highlighted');
-                                  setTimeout(() => phraseElement.classList.remove('phrase-highlighted'), 1500);
-                                }
-                              }}>
-                                <div className="phrase-text" data-phrase={index}>• &quot;{phrase.phrase}&quot;</div>
-                                <div className="phrase-explanation">→ {phrase.explanation}</div>
-                              </div>
-                            ))}
+                  sessionHistory.map((session) => {
+                    const isExpanded = expandedItems.has(session.id)
+                    const phraseCount = session.key_phrases?.length || 0
+                    
+                    return (
+                      <div key={session.id} className={`collection-item ${isExpanded ? 'expanded' : ''}`}>
+                        {/* Compact Header - Always Visible */}
+                        <div 
+                          className="collection-header" 
+                          onClick={() => toggleExpanded(session.id)}
+                        >
+                          <div className="collection-summary">
+                            <div className="transformed-preview">
+                              ✨ &quot;{session.transformed_text?.slice(0, 60)}...&quot;
+                            </div>
+                            <div className="collection-meta">
+                              📅 {new Date(session.created_at).toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric', 
+                                year: 'numeric' 
+                              })} • 🎯 {phraseCount} phrases
+                            </div>
+                          </div>
+                          <div className="expand-icon">
+                            {isExpanded ? '▲' : '▼'}
                           </div>
                         </div>
-                      )}
-                    </div>
-                  ))
+
+                        {/* Expanded Content - Only When Expanded */}
+                        {isExpanded && (
+                          <div className="collection-details">
+                            <div className="collection-section">
+                              <div className="section-label">💭 Original:</div>
+                              <div className="original-text">&quot;{session.original_text}&quot;</div>
+                            </div>
+                            
+                            <div className="collection-section">
+                              <div className="section-label">✨ Transformed:</div>
+                              <div className="transformed-text">{session.transformed_text}</div>
+                            </div>
+                            
+                            {session.key_phrases && session.key_phrases.length > 0 && (
+                              <div className="collection-section">
+                                <div className="section-label">🎯 Key Phrases ({session.key_phrases.length}):</div>
+                                <div className="phrases-list">
+                                  {session.key_phrases.map((phrase, index) => (
+                                    <div key={index} className="phrase-item" onClick={() => {
+                                      // Highlight phrase when clicked
+                                      const phraseElement = document.querySelector(`[data-phrase="${session.id}-${index}"]`);
+                                      if (phraseElement) {
+                                        phraseElement.classList.add('phrase-highlighted');
+                                        setTimeout(() => phraseElement.classList.remove('phrase-highlighted'), 1500);
+                                      }
+                                    }}>
+                                      <div className="phrase-text" data-phrase={`${session.id}-${index}`}>• &quot;{phrase.phrase}&quot;</div>
+                                      <div className="phrase-explanation">→ {phrase.explanation}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })
                 )}
               </div>
             </div>
@@ -1343,28 +1378,71 @@ export default function VibeUpApp() {
           line-height: 1.4;
         }
 
-        .collection-card {
+        .collection-item {
           background: #ffffff;
-          border-radius: 20px;
-          padding: 24px;
-          margin-bottom: 16px;
+          border-radius: 16px;
+          margin-bottom: 12px;
           border: 1px solid #e4e4e7;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+          overflow: hidden;
           transition: all 0.3s ease;
         }
 
-        .collection-card:hover {
+        .collection-item:hover {
           border-color: #d4d4d8;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-          transform: translateY(-1px);
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         }
 
-        .collection-date {
+        .collection-item.expanded {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .collection-header {
+          padding: 16px 20px;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: background 0.2s ease;
+        }
+
+        .collection-header:hover {
+          background: #fafafa;
+        }
+
+        .collection-summary {
+          flex: 1;
+        }
+
+        .transformed-preview {
+          font-size: 15px;
+          color: #09090b;
+          font-weight: 500;
+          margin-bottom: 6px;
+          line-height: 1.4;
+        }
+
+        .collection-meta {
           font-size: 12px;
           color: #71717a;
-          margin-bottom: 20px;
-          font-weight: 600;
-          padding: 4px 0;
+          font-weight: 500;
+        }
+
+        .expand-icon {
+          color: #71717a;
+          font-size: 12px;
+          margin-left: 12px;
+          transition: transform 0.2s ease;
+        }
+
+        .collection-item.expanded .expand-icon {
+          transform: rotate(0deg);
+        }
+
+        .collection-details {
+          padding: 0 20px 20px 20px;
+          border-top: 1px solid #f4f4f5;
+          background: #fafafa;
+          animation: slideDown 0.3s ease;
         }
 
         .collection-section {
@@ -1443,6 +1521,19 @@ export default function VibeUpApp() {
           background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
           border-color: #f59e0b !important;
           transform: scale(1.02) !important;
+        }
+
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            max-height: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            max-height: 500px;
+            transform: translateY(0);
+          }
         }
       `}</style>
     </div>
