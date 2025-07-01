@@ -12,6 +12,22 @@ export const metadata: Metadata = {
   title: "VibeUp - Transform Your Communication",
   description: "Learn to express yourself naturally through daily practice",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "32x32" }
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    other: [
+      {
+        rel: "icon",
+        url: "/app-icon.svg",
+        type: "image/svg+xml"
+      }
+    ]
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -35,20 +51,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" sizes="32x32" />
-        <link rel="icon" href="/app-icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        
         {/* PWA Meta Tags */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="VibeUp" />
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
-        
-        {/* PWA Manifest */}
-        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={`${inter.variable} antialiased`}>
         {children}
