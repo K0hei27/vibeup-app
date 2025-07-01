@@ -311,18 +311,19 @@ export default function VibeUpApp() {
       if (error) {
         if (typeof error === 'string') {
           errorMessage = error
-        } else if (error.message) {
-          if (error.message.includes('Invalid login credentials')) {
+        } else if (error && typeof error === 'object' && 'message' in error) {
+          const message = (error as { message: string }).message
+          if (message.includes('Invalid login credentials')) {
             errorMessage = 'Invalid email or password'
-          } else if (error.message.includes('User already registered')) {
+          } else if (message.includes('User already registered')) {
             errorMessage = 'Account already exists. Try signing in instead.'
             setAuthMode('login')
-          } else if (error.message.includes('Email not confirmed')) {
+          } else if (message.includes('Email not confirmed')) {
             errorMessage = 'Please confirm your email address first'
-          } else if (error.message.includes('signup disabled')) {
+          } else if (message.includes('signup disabled')) {
             errorMessage = 'Account creation is currently disabled'
           } else {
-            errorMessage = error.message
+            errorMessage = message
           }
         }
       }
