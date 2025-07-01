@@ -6,6 +6,29 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Mobile-specific optimizations */
+@supports (height: 100dvh) {
+  html, body {
+    height: 100dvh;
+  }
+}
+
+/* Prevent zoom on input focus */
+input, textarea, select {
+  font-size: 16px;
+}
+
+/* Touch action optimization */
+body {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #000000;

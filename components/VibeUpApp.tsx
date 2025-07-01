@@ -343,42 +343,37 @@ export default function VibeUpApp() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center p-5 bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="phone-frame">
-        <div className="screen">
-          <div className="notch" />
-          
-          <div className="status-bar">
-            <span>9:41</span>
-            <span className="user-status">
-              {!isHydrated ? (
-                <span>•••</span>
-              ) : currentUser ? (
-                <button 
-                  className="sign-in-status logged-in"
-                  onClick={handleSignOut}
-                  title="Click to sign out"
-                >
-                  {currentUser.id.slice(0, 8)}
-                </button>
-              ) : (
-                <button 
-                  className="sign-in-status"
-                  onClick={() => {
-                    setShowAuth(true)
-                    setAuthMode('login')
-                    setAuthEmail('')
-                    setAuthPassword('')
-                    setAuthError(null)
-                  }}
-                >
-                  Sign In
-                </button>
-              )}
-            </span>
-          </div>
-          
-          <div className="app-container">
+    <div className="mobile-app">
+      <div className="app-header">
+        <div className="user-status">
+          {!isHydrated ? (
+            <span>•••</span>
+          ) : currentUser ? (
+            <button 
+              className="sign-in-status logged-in"
+              onClick={handleSignOut}
+              title="Click to sign out"
+            >
+              {currentUser.id.slice(0, 8)}
+            </button>
+          ) : (
+            <button 
+              className="sign-in-status"
+              onClick={() => {
+                setShowAuth(true)
+                setAuthMode('login')
+                setAuthEmail('')
+                setAuthPassword('')
+                setAuthError(null)
+              }}
+            >
+              Sign In
+            </button>
+          )}
+        </div>
+      </div>
+      
+      <div className="app-container">
             <div className="header">
               <div className="header-row">
                 {isHydrated && currentUser && (
@@ -461,9 +456,6 @@ export default function VibeUpApp() {
             )}
           </div>
 
-          <div className="home-indicator" />
-        </div>
-        
         {/* Authentication Modal */}
         {showAuth && (
           <div className="auth-modal-overlay" onClick={() => setShowAuth(false)}>
@@ -655,47 +647,28 @@ export default function VibeUpApp() {
       </div>
 
       <style jsx>{`
-        .phone-frame {
-          width: 375px;
-          height: 812px;
-          background: #1d1d1f;
-          border-radius: 40px;
-          padding: 2px;
-          box-shadow: 0 20px 80px rgba(0,0,0,0.15);
+        .mobile-app {
+          min-height: 100vh;
+          min-height: 100dvh; /* Dynamic viewport height for mobile */
+          width: 100vw;
+          background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
           position: relative;
-        }
-
-        .screen {
-          width: 100%;
-          height: 100%;
-          background: #ffffff;
-          border-radius: 38px;
-          overflow: hidden;
-          position: relative;
-        }
-
-        .notch {
-          position: absolute;
-          top: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 164px;
-          height: 30px;
-          background: #1d1d1f;
-          border-radius: 0 0 18px 18px;
-          z-index: 10;
-        }
-
-        .status-bar {
-          height: 54px;
-          background: #ffffff;
           display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          padding: 0 30px 10px 30px;
-          font-size: 16px;
-          font-weight: 600;
-          color: #1d1d1f;
+          flex-direction: column;
+          overflow-x: hidden;
+        }
+
+        .app-header {
+          background: #ffffff;
+          padding: env(safe-area-inset-top, 20px) 20px 12px 20px;
+          border-bottom: 1px solid #f4f4f5;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          flex-shrink: 0;
+          position: sticky;
+          top: 0;
+          z-index: 100;
         }
 
         .user-status {
@@ -735,11 +708,13 @@ export default function VibeUpApp() {
         }
 
         .app-container {
-          padding: 0 24px 24px 24px;
-          height: calc(812px - 54px - 90px);
+          flex: 1;
+          padding: 20px;
           overflow-y: auto;
           background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
           position: relative;
+          min-height: 0;
+          padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
         .app-container::before {
@@ -758,7 +733,7 @@ export default function VibeUpApp() {
         .header {
           text-align: center;
           margin-bottom: 32px;
-          padding-top: 24px;
+          padding-top: 20px;
         }
 
         .app-title {
@@ -1029,17 +1004,6 @@ export default function VibeUpApp() {
           box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
         }
 
-        .home-indicator {
-          position: absolute;
-          bottom: 8px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 134px;
-          height: 5px;
-          background: #1d1d1f;
-          border-radius: 3px;
-          opacity: 0.8;
-        }
 
         .auth-modal-overlay {
           position: fixed;
@@ -1059,8 +1023,9 @@ export default function VibeUpApp() {
           background: white;
           border-radius: 24px;
           padding: 32px 28px;
-          width: 320px;
-          max-width: 90vw;
+          width: min(90vw, 400px);
+          max-height: 80vh;
+          overflow-y: auto;
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
           animation: modalSlideIn 0.3s ease-out;
         }
@@ -1290,10 +1255,8 @@ export default function VibeUpApp() {
         .history-modal {
           background: white;
           border-radius: 24px;
-          width: 350px;
-          max-width: 90vw;
-          height: 70vh;
-          max-height: 600px;
+          width: min(90vw, 400px);
+          height: min(80vh, 600px);
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
           animation: modalSlideIn 0.3s ease-out;
           overflow: hidden;
