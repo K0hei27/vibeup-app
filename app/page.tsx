@@ -1,5 +1,5 @@
-import VibeUpApp from '@/components/VibeUpApp'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  return <VibeUpApp />
+  redirect('/app')
 }

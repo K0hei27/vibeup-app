@@ -1,5 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter"
+});
 
 export const metadata: Metadata = {
   title: "VibeUp - Transform Your Communication",
@@ -33,7 +40,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="VibeUp" />
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
-      <body className="antialiased">
+      <body className={`${inter.variable} antialiased`}>
         {children}
       </body>
     </html>

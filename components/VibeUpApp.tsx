@@ -345,67 +345,78 @@ export default function VibeUpApp() {
 
   return (
     <div className="mobile-app">
-      <div className="app-header">
-        <div className="user-status">
-          {!isHydrated ? (
-            <span>•••</span>
-          ) : currentUser ? (
+      {/* Top Navigation Bar */}
+      <div className="top-nav">
+        <div className="nav-left">
+          {isHydrated && currentUser && (
             <button 
-              className="sign-in-status logged-in"
-              onClick={handleSignOut}
-              title="Click to sign out"
-            >
-              {currentUser.id.slice(0, 8)}
-            </button>
-          ) : (
-            <button 
-              className="sign-in-status"
+              className="history-button"
               onClick={() => {
-                setShowAuth(true)
-                setAuthMode('login')
-                setAuthEmail('')
-                setAuthPassword('')
-                setAuthError(null)
+                setShowHistory(true)
+                loadSessionHistory()
               }}
+              title="View History"
             >
-              Sign In
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
             </button>
           )}
+        </div>
+        <div className="nav-right">
+          <div className="user-status">
+            {!isHydrated ? (
+              <span>•••</span>
+            ) : currentUser ? (
+              <button 
+                className="sign-in-status logged-in"
+                onClick={handleSignOut}
+                title="Click to sign out"
+              >
+                {currentUser.id.slice(0, 8)}
+              </button>
+            ) : (
+              <button 
+                className="sign-in-status"
+                onClick={() => {
+                  setShowAuth(true)
+                  setAuthMode('login')
+                  setAuthEmail('')
+                  setAuthPassword('')
+                  setAuthError(null)
+                }}
+              >
+                Sign In
+              </button>
+            )}
+          </div>
         </div>
       </div>
       
       <div className="app-container">
-            <div className="header">
-              <div className="header-row">
-                {isHydrated && currentUser && (
-                  <button 
-                    className="history-button"
-                    onClick={() => {
-                      setShowHistory(true)
-                      loadSessionHistory()
-                    }}
-                  >
-                    📚
-                  </button>
-                )}
-                <h1 className="app-title">VibeUp</h1>
-                <div className="header-spacer"></div>
-              </div>
-              <p className="app-subtitle">Express yourself with the perfect vibe</p>
-              <div className="context-pill">Casual • Thoughtful • Natural</div>
-            </div>
+        {/* Main Header Section */}
+        <div className="main-header">
+          <div className="app-branding">
+            <img 
+              src="/app-icon-title.svg" 
+              alt="VibeUp" 
+              className="app-icon-title"
+            />
+          </div>
+          <p className="app-subtitle">Express yourself with the perfect vibe</p>
+          <div className="context-pill">Casual • Thoughtful • Natural</div>
+        </div>
 
-            <div className="input-section">
+        <div className="input-section">
               <div className="input-label">What&apos;s on your mind? 💭</div>
-              <div className="input-container">
-                <textarea 
-                  className="input-textarea"
-                  id="userInput"
-                  placeholder="Share your thoughts, feelings, or what you want to express..."
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                />
-              </div>
+              <textarea 
+                className="input-textarea"
+                id="userInput"
+                placeholder="Share your thoughts, feelings, or what you want to express..."
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+              />
             </div>
 
             <button 
@@ -645,9 +656,8 @@ export default function VibeUpApp() {
             </div>
           </div>
         )}
-      </div>
-
-      <style>{`
+        
+        <style jsx>{`
         .mobile-app {
           min-height: 100vh;
           min-height: 100dvh; /* Dynamic viewport height for mobile */
@@ -657,19 +667,51 @@ export default function VibeUpApp() {
           display: flex;
           flex-direction: column;
           overflow-x: hidden;
+          font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        .app-header {
+        /* Top Navigation Bar */
+        .top-nav {
           background: #ffffff;
-          padding: env(safe-area-inset-top, 20px) 20px 12px 20px;
+          padding: calc(env(safe-area-inset-top, 20px) + 12px) 20px 12px 20px;
           border-bottom: 1px solid #f4f4f5;
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-between;
           align-items: center;
-          flex-shrink: 0;
           position: sticky;
           top: 0;
           z-index: 100;
+          min-height: 56px;
+        }
+
+        .nav-left {
+          display: flex;
+          align-items: center;
+        }
+
+        .nav-right {
+          display: flex;
+          align-items: center;
+        }
+
+        /* Main Header Section */
+        .main-header {
+          text-align: center;
+          padding: 32px 20px 40px 20px;
+        }
+
+        .app-branding {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 16px;
+          width: 100%;
+        }
+
+        .app-icon-title {
+          height: 60px;
+          width: auto;
+          object-fit: contain;
         }
 
         .user-status {
@@ -677,6 +719,7 @@ export default function VibeUpApp() {
           display: flex;
           align-items: center;
           gap: 4px;
+          position: relative;
         }
 
         .sign-in-status {
@@ -696,11 +739,15 @@ export default function VibeUpApp() {
         .sign-in-status.logged-in {
           background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
           color: white;
-          padding: 4px 12px;
-          border-radius: 12px;
+          padding: 6px 14px;
+          border-radius: 14px;
           font-weight: 700;
           letter-spacing: 0.5px;
           box-shadow: 0 2px 8px rgba(8, 145, 178, 0.25);
+          min-height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .sign-in-status.logged-in:hover {
@@ -710,12 +757,12 @@ export default function VibeUpApp() {
 
         .app-container {
           flex: 1;
-          padding: 20px;
+          padding: 24px;
           overflow-y: auto;
           background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
           position: relative;
           min-height: 0;
-          padding-bottom: env(safe-area-inset-bottom, 20px);
+          padding-bottom: env(safe-area-inset-bottom, 24px);
         }
 
         .app-container::before {
@@ -731,28 +778,15 @@ export default function VibeUpApp() {
           pointer-events: none;
         }
 
-        .header {
-          text-align: center;
-          margin-bottom: 32px;
-          padding-top: 20px;
-        }
 
-        .app-title {
-          font-size: 36px;
-          font-weight: 800;
-          background: linear-gradient(135deg, #000000 0%, #18181b 50%, #27272a 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          margin-bottom: 8px;
-          letter-spacing: -0.03em;
-        }
 
         .app-subtitle {
           font-size: 17px;
           color: #52525b;
           font-weight: 500;
           line-height: 1.4;
+          margin: 0 0 24px 0;
+          padding: 0;
         }
 
         .context-pill {
@@ -763,9 +797,9 @@ export default function VibeUpApp() {
           border-radius: 25px;
           font-size: 14px;
           font-weight: 600;
-          margin: 24px auto;
           display: inline-block;
           letter-spacing: 0.01em;
+          margin: 0;
         }
 
         .input-section {
@@ -773,7 +807,7 @@ export default function VibeUpApp() {
         }
 
         .input-label {
-          font-size: 20px;
+          font-size: 18px;
           font-weight: 700;
           color: #09090b;
           margin-bottom: 16px;
@@ -783,11 +817,11 @@ export default function VibeUpApp() {
         .input-textarea {
           width: 100%;
           min-height: 120px;
-          padding: 20px;
+          padding: 16px;
           border: 2px solid #e4e4e7;
-          border-radius: 20px;
-          font-size: 17px;
-          font-family: inherit;
+          border-radius: 16px;
+          font-size: 16px;
+          font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           resize: none;
           background: #ffffff;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -813,9 +847,9 @@ export default function VibeUpApp() {
           background: linear-gradient(135deg, #000000 0%, #18181b 100%);
           color: white;
           border: none;
-          padding: 18px;
-          border-radius: 20px;
-          font-size: 18px;
+          padding: 16px;
+          border-radius: 16px;
+          font-size: 16px;
           font-weight: 700;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -823,7 +857,8 @@ export default function VibeUpApp() {
           position: relative;
           overflow: hidden;
           letter-spacing: -0.01em;
-          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+          min-height: 48px;
         }
 
         .transform-button:active {
@@ -832,7 +867,7 @@ export default function VibeUpApp() {
 
         .transform-button:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
         }
 
         .transform-button.loading {
@@ -1223,15 +1258,15 @@ export default function VibeUpApp() {
         .history-button {
           background: rgba(0, 0, 0, 0.05);
           border: none;
-          border-radius: 50%;
+          border-radius: 12px;
           width: 40px;
           height: 40px;
-          font-size: 18px;
           cursor: pointer;
           transition: all 0.2s ease;
           display: flex;
           align-items: center;
           justify-content: center;
+          color: #52525b;
         }
 
         .history-button:hover {
