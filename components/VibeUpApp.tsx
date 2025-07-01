@@ -555,12 +555,14 @@ export default function VibeUpApp() {
           <div className="history-modal-overlay" onClick={() => setShowHistory(false)}>
             <div className="history-modal" onClick={(e) => e.stopPropagation()}>
               <div className="history-header">
-                <h3 className="history-title">My Collections</h3>
-                {sessionHistory.length > 0 && (
-                  <div className="progress-indicator">
-                    📚 {sessionHistory.length} sessions • 🎯 {sessionHistory.reduce((total, session) => total + (session.key_phrases?.length || 0), 0)} phrases learned
-                  </div>
-                )}
+                <div className="header-content">
+                  <h3 className="history-title">My Collections</h3>
+                  {sessionHistory.length > 0 && (
+                    <div className="progress-indicator">
+                      📚 {sessionHistory.length} sessions • 🎯 {sessionHistory.reduce((total, session) => total + (session.key_phrases?.length || 0), 0)} phrases learned
+                    </div>
+                  )}
+                </div>
                 <button 
                   className="close-button"
                   onClick={() => setShowHistory(false)}
@@ -592,14 +594,14 @@ export default function VibeUpApp() {
                         >
                           <div className="collection-summary">
                             <div className="transformed-preview">
-                              ✨ &quot;{session.transformed_text?.slice(0, 60)}...&quot;
+                              &quot;{session.transformed_text?.slice(0, 60)}...&quot;
                             </div>
                             <div className="collection-meta">
-                              📅 {new Date(session.created_at).toLocaleDateString('en-US', { 
+                              {new Date(session.created_at).toLocaleDateString('en-US', { 
                                 month: 'short', 
                                 day: 'numeric', 
                                 year: 'numeric' 
-                              })} • 🎯 {phraseCount} phrases
+                              })} • {phraseCount} phrases
                             </div>
                           </div>
                           <div className="expand-icon">
@@ -1290,18 +1292,26 @@ export default function VibeUpApp() {
           border-radius: 24px;
           width: 350px;
           max-width: 90vw;
-          max-height: 80vh;
+          height: 70vh;
+          max-height: 600px;
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
           animation: modalSlideIn 0.3s ease-out;
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
         }
 
         .history-header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          padding: 24px 24px 16px 24px;
+          align-items: flex-start;
+          padding: 24px 24px 20px 24px;
           border-bottom: 1px solid #f4f4f5;
+          flex-shrink: 0;
+        }
+
+        .header-content {
+          flex: 1;
         }
 
         .history-title {
@@ -1344,8 +1354,9 @@ export default function VibeUpApp() {
 
         .history-content {
           padding: 16px 24px 24px 24px;
-          max-height: 60vh;
+          flex: 1;
           overflow-y: auto;
+          min-height: 0;
         }
 
         .loading-state {
@@ -1442,7 +1453,8 @@ export default function VibeUpApp() {
           padding: 0 20px 20px 20px;
           border-top: 1px solid #f4f4f5;
           background: #fafafa;
-          animation: slideDown 0.3s ease;
+          animation: slideDown 0.3s ease-out;
+          overflow: hidden;
         }
 
         .collection-section {
@@ -1527,13 +1539,30 @@ export default function VibeUpApp() {
           from {
             opacity: 0;
             max-height: 0;
-            transform: translateY(-10px);
+            transform: translateY(-8px);
           }
           to {
             opacity: 1;
-            max-height: 500px;
+            max-height: 600px;
             transform: translateY(0);
           }
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 1;
+            max-height: 600px;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            max-height: 0;
+            transform: translateY(-8px);
+          }
+        }
+
+        .collection-item:not(.expanded) .collection-details {
+          animation: slideUp 0.2s ease-in;
         }
       `}</style>
     </div>
