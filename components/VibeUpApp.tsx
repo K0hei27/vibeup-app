@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { SupabaseService } from '@/lib/supabase-service'
 import { auth } from '@/lib/supabase'
 import { AuthUser } from '@/types'
