@@ -23,6 +23,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // 🚨 COST PROTECTION: Limit input length
+    if (text.length > 500) {
+      return NextResponse.json(
+        { error: 'Text too long. Please keep it under 500 characters to manage costs.' },
+        { status: 400 }
+      )
+    }
+
+    // 🚨 COST PROTECTION: Check daily usage limits
+    try {
+      const usageResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/usage`, {
+        method: 'GET'
+      })
+      const usageData = await usageResponse.json()
+      
+      if (usageData.remaining <= 0) {
+        console.warn('🚨 Daily API limit reached!')
+        return NextResponse.json(
+          { error: 'Daily usage limit reached. Please try again tomorrow.' },
+          { status: 429 }
+        )
+      }
+    } catch (error) {
+      console.warn('⚠️ Could not check usage limits:', error)
+    }
+
     const apiKey = process.env.GEMINI_API_KEY
     console.log('🔑 Environment check - API key exists:', !!apiKey)
     console.log('🔑 API key first 10 chars:', apiKey ? apiKey.slice(0, 10) + '...' : 'NOT FOUND')
@@ -152,6 +178,17 @@ Keep it real and natural!
         phrase: phrase.phrase || '',
         explanation: phrase.explanation || ''
       }))
+
+      // 📊 Track successful usage
+      try {
+        await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/usage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tokens: text.length + result.transformedText.length })
+        })
+      } catch (error) {
+        console.warn('⚠️ Could not track usage:', error)
+      }
 
       return NextResponse.json({
         transformedText: result.transformedText,
