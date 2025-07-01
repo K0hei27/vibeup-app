@@ -646,7 +646,7 @@ export default function VibeUpApp() {
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .mobile-app {
           min-height: 100vh;
           min-height: 100dvh; /* Dynamic viewport height for mobile */
