@@ -65,29 +65,29 @@ export async function POST(request: NextRequest) {
     console.log('✅ Using Gemini API key:', apiKey.slice(0, 10) + '...')
 
     const prompt = `
-You are a communication expert helping someone transform raw thoughts into polished, natural expressions. Elevate their message while preserving authenticity.
+You're helping someone express their thoughts more clearly and naturally. Transform their message to sound like the thoughtful, well-spoken version of themselves.
 
 Original: "${text}"
 
-Transform it to be:
-- More articulate and sophisticated without being overly formal
-- Clearer structure and better word choice
-- Professional yet natural tone
-- Grammatically correct and well-phrased
-- More impactful and engaging
+Make it:
+- Clear and natural (not stiff or corporate)
+- Sound like how people actually talk when they're being thoughtful
+- Fix grammar and awkward phrasing
+- Better flow and word choice
+- Genuine but more polished
 
 Guidelines:
-- Fix grammar and awkward phrasing
-- Use more precise vocabulary
-- Improve flow and readability  
-- Add sophistication while staying authentic
-- Make it sound educated but approachable
+- Keep it conversational and human
+- Use everyday language that flows well
+- Make it sound confident but not pretentious
+- Fix mistakes without losing personality
+- Think "smart friend giving advice" not "business presentation"
 
 Then identify 3 key phrases from your transformation that made it better.
 
 Respond in JSON:
 {
-  "transformedText": "Your refined version here",
+  "transformedText": "Your natural version here",
   "keyPhrases": [
     {
       "phrase": "specific improved phrase",
@@ -108,11 +108,11 @@ Example transformation:
 Original: "VibeUp is super application that help you keep learning new natural and professional tone and style!"
 Transformed: "VibeUp is an innovative app that helps you develop natural, professional communication skills through continuous practice and AI-powered guidance."
 Key phrases:
-- "innovative app" - More professional than "super application"
-- "develop communication skills" - Clear, specific benefit  
+- "innovative app" - More natural than "super application"
+- "helps you develop" - Clearer, more supportive tone  
 - "continuous practice" - Better than "keep learning"
 
-Keep explanations short and punchy!
+Keep it natural and conversational!
 `
 
     console.log('📡 Sending request to Gemini API...')
