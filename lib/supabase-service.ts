@@ -156,8 +156,8 @@ export class SupabaseService {
         .insert({
           original_text: originalText,
           transformed_text: transformedText,
-          key_phrases: keyPhrases,
-          created_at: new Date().toISOString()
+          key_phrases: keyPhrases
+          // Let database handle created_at with default value
         })
         .select()
         .single()
