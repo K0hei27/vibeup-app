@@ -83,33 +83,36 @@ Guidelines:
 - Add sophistication while staying authentic
 - Make it sound educated but approachable
 
-Then identify 3 key improvements you made.
+Then identify 3 key phrases from your transformation that made it better.
 
 Respond in JSON:
 {
   "transformedText": "Your refined version here",
   "keyPhrases": [
     {
-      "phrase": "specific improvement made",
-      "explanation": "Why this enhances communication"
+      "phrase": "specific improved phrase",
+      "explanation": "Brief benefit (6 words max)"
     },
     {
-      "phrase": "another key change",
-      "explanation": "How this improves clarity"
+      "phrase": "another better phrase",
+      "explanation": "Why it's better (6 words max)"
     },
     {
-      "phrase": "third enhancement",
-      "explanation": "What this adds to impact"
+      "phrase": "third enhanced phrase",
+      "explanation": "What it improves (6 words max)"
     }
   ]
 }
 
-Example transformations:
-- "This app is super cool and helps you learn stuff" → "This application offers an innovative approach to skill development"
-- "I don't know why this keeps happening" → "I'm seeking to understand the underlying patterns here"
-- "We should probably maybe try something different" → "I recommend exploring alternative approaches"
+Example transformation:
+Original: "VibeUp is super application that help you keep learning new natural and professional tone and style!"
+Transformed: "VibeUp is an innovative app that helps you develop natural, professional communication skills through continuous practice and AI-powered guidance."
+Key phrases:
+- "innovative app" - More professional than "super application"
+- "develop communication skills" - Clear, specific benefit  
+- "continuous practice" - Better than "keep learning"
 
-Focus on elevation and refinement!
+Keep explanations short and punchy!
 `
 
     console.log('📡 Sending request to Gemini API...')
