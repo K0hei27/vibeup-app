@@ -136,6 +136,18 @@ export default function VibeUpApp() {
           })
           // Continue with UI even if save fails
         }
+      } else {
+        // Track anonymous usage for insights
+        try {
+          await SupabaseService.trackAnonymousUsage(
+            userInput,
+            result.transformedText,
+            result.keyPhrases
+          )
+        } catch (error) {
+          console.error('Failed to track anonymous usage:', error)
+          // Continue with UI even if tracking fails
+        }
       }
       
       setShowResult(true)

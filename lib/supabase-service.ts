@@ -148,6 +148,33 @@ export class SupabaseService {
     return true
   }
 
+  // Anonymous usage tracking
+  static async trackAnonymousUsage(originalText: string, transformedText: string, keyPhrases: any[]) {
+    try {
+      const { data, error } = await supabase
+        .from('anonymous_usage')
+        .insert({
+          original_text: originalText,
+          transformed_text: transformedText,
+          key_phrases: keyPhrases,
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+      
+      if (error) {
+        console.error('Failed to track anonymous usage:', error)
+        // Don't throw error - this is non-critical tracking
+        return null
+      }
+      return data
+    } catch (error) {
+      console.error('Error in anonymous usage tracking:', error)
+      // Don't throw error - this is non-critical tracking
+      return null
+    }
+  }
+
   // Test connection
   static async testConnection() {
     const { error } = await supabase
