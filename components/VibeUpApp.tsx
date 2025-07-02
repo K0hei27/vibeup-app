@@ -672,8 +672,6 @@ export default function VibeUpApp() {
           width: 100vw;
           background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
           position: relative;
-          display: flex;
-          flex-direction: column;
           overflow-x: hidden;
           font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
@@ -764,7 +762,6 @@ export default function VibeUpApp() {
         }
 
         .app-container {
-          flex: 1;
           padding: 24px;
           background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
           position: relative;
