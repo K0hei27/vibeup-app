@@ -181,7 +181,7 @@ export default function VibeUpApp() {
   const saveSession = async () => {
     if (!currentUser) {
       setShowAuth(true)
-      setAuthMode('login')
+      setAuthMode('signup')
       setAuthEmail('')
       setAuthPassword('')
       setAuthError(null)
@@ -493,12 +493,12 @@ export default function VibeUpApp() {
           <div className="auth-modal-overlay" onClick={() => setShowAuth(false)}>
             <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
               <h3 className="auth-title">
-                {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
+                {authMode === 'login' ? 'Welcome Back' : 'Save This Transformation'}
               </h3>
               <p className="auth-subtitle">
                 {authMode === 'login' 
                   ? 'Sign in to access your saved phrases' 
-                  : 'Start saving your communication progress'}
+                  : 'Create your account to build a personal collection of polished phrases and communication wins'}
               </p>
               
               {authError && (
