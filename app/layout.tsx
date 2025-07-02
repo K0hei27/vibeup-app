@@ -54,7 +54,10 @@ export default function RootLayout({
       <head>
         {/* PWA Meta Tags */}
         <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#ffffff" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#ffffff" />
       </head>
       <body className={`${inter.variable} antialiased`}>
