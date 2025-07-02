@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { SupabaseService } from '@/lib/supabase-service'
-import { auth } from '@/lib/supabase'
+import { auth, supabase } from '@/lib/supabase'
 import { AuthUser } from '@/types'
 
 interface KeyPhrase {
@@ -112,7 +112,7 @@ export default function VibeUpApp() {
       setTransformedText(result.transformedText)
       setKeyPhrases(result.keyPhrases)
       
-      // Save session to database if user is authenticated
+      // Save session to database if user is authenticated  
       if (currentUser) {
         try {
           // Add a small delay to ensure auth state is properly synced
@@ -124,30 +124,25 @@ export default function VibeUpApp() {
             transformed_text: result.transformedText,
             key_phrases: result.keyPhrases
           })
-          // setCurrentSession(session)
+          console.log('✅ Session saved for authenticated user')
         } catch (error) {
           console.error('Failed to save session:', error)
-          console.error('Current user context:', currentUser)
-          console.error('Session data attempted:', {
-            user_id: currentUser.id,
-            original_text: userInput,
-            transformed_text: result.transformedText,
-            key_phrases: result.keyPhrases
-          })
           // Continue with UI even if save fails
         }
       } else {
-        // Track anonymous usage for insights
-        try {
-          await SupabaseService.trackAnonymousUsage(
-            userInput,
-            result.transformedText,
-            result.keyPhrases
-          )
-        } catch (error) {
-          console.error('Failed to track anonymous usage:', error)
-          // Continue with UI even if tracking fails
-        }
+        // Track anonymous usage for analytics (fire and forget)
+        supabase
+          .from('anonymous_interactions')
+          .insert({
+            original_text: userInput,
+            transformed_text: result.transformedText
+          })
+          .then(() => {
+            // Silent success - no action needed
+          })
+          .catch(() => {
+            // Silent fail - don't block UX for analytics
+          })
       }
       
       setShowResult(true)
@@ -253,17 +248,21 @@ export default function VibeUpApp() {
     setAuthLoading(true)
     setAuthError(null)
 
+    let authData: any = null
+    
     try {
       if (authMode === 'signup') {
         const { data, error } = await auth.signUp(authEmail, authPassword)
         if (error) throw error
+        authData = data
         
         console.log('User signed up successfully:', data)
         
         // Check if user needs email confirmation
         if (data?.user && !data?.session) {
           setAuthError('Please check your email to confirm your account, then try signing in.')
-          setAuthMode('login') // Switch to login mode
+          setAuthMode('login')
+          setAuthLoading(false)
           return
         }
         
@@ -273,7 +272,6 @@ export default function VibeUpApp() {
             id: data.user.id,
             email: data.user.email!
           }
-          console.log('Setting current user:', newUser)
           setCurrentUser(newUser)
           
           // Ensure user record exists in public.users table
@@ -284,7 +282,7 @@ export default function VibeUpApp() {
               preferences: {},
               streak_count: 0
             })
-            console.log('User record created/updated in public.users')
+            console.log('✅ User account created successfully')
           } catch (userError) {
             console.log('User record might already exist:', userError)
           }
@@ -292,6 +290,7 @@ export default function VibeUpApp() {
       } else {
         const { data, error } = await auth.signIn(authEmail, authPassword)
         if (error) throw error
+        authData = data
         console.log('User signed in successfully:', data)
         
         // Manually update current user state for immediate UI feedback
@@ -300,7 +299,6 @@ export default function VibeUpApp() {
             id: data.user.id,
             email: data.user.email!
           }
-          console.log('Setting current user:', newUser)
           setCurrentUser(newUser)
           
           // Ensure user record exists in public.users table
@@ -311,7 +309,7 @@ export default function VibeUpApp() {
               preferences: {},
               streak_count: 0
             })
-            console.log('User record created/updated in public.users')
+            console.log('✅ User signed in successfully')
           } catch (userError) {
             console.log('User record might already exist:', userError)
           }
@@ -321,14 +319,41 @@ export default function VibeUpApp() {
       // Reset form and close modal
       setAuthEmail('')
       setAuthPassword('')
+      setAuthError(null)
       setShowAuth(false)
       
       // If we have a transformation ready and user just signed up to save it, save it automatically
-      if (showResult && transformedText && keyPhrases.length > 0) {
-        // Small delay to ensure user state is fully set
-        setTimeout(() => {
-          saveSession()
-        }, 500)
+      if (showResult && transformedText && keyPhrases.length > 0 && authData?.user) {
+        const userId = authData.user.id
+        // Small delay to ensure user state is fully set, then save directly
+        setTimeout(async () => {
+          try {
+            setIsSaved(true)
+            
+            // First create the session record
+            await SupabaseService.createSession({
+              user_id: userId,
+              original_text: userInput,
+              transformed_text: transformedText,
+              key_phrases: keyPhrases
+            })
+            
+            // Then save each key phrase to the phrases table
+            for (const keyPhrase of keyPhrases) {
+              await SupabaseService.createPhrase({
+                user_id: userId,
+                phrase: keyPhrase.phrase,
+                context: 'Communication improvement',
+                usage_example: keyPhrase.explanation,
+                learned_date: new Date().toISOString().split('T')[0]
+              })
+            }
+            console.log('✅ Transformation auto-saved after auth (session + phrases)')
+          } catch (error) {
+            console.error('Failed to auto-save transformation:', error)
+            setIsSaved(false)
+          }
+        }, 1500)
       }
     } catch (error: unknown) {
       console.error('Auth error:', error)
@@ -441,7 +466,7 @@ export default function VibeUpApp() {
               <textarea 
                 className="input-textarea"
                 id="userInput"
-                placeholder="Share your thoughts, feelings, or what you want to express..."
+                placeholder="Share your thoughts, feelings, or what you want to express... (e.g. this is a cool application that helps you keep learning new natural expressions in a new way)"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
               />

@@ -10,23 +10,59 @@ interface TransformationResult {
   keyPhrases: KeyPhrase[]
 }
 
+// Simple rate limiting storage
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
+
+// Clean up old entries every 5 minutes
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, value] of rateLimitMap.entries()) {
+    if (now > value.resetTime) {
+      rateLimitMap.delete(key)
+    }
+  }
+}, 5 * 60 * 1000)
+
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting protection
+    const rateLimitKey = request.headers.get('x-forwarded-for') || 
+                        request.headers.get('x-real-ip') || 
+                        'anonymous'
+    
+    const now = Date.now()
+    const windowMs = 60 * 1000 // 1 minute window
+    const maxRequests = 10 // 10 requests per minute
+    
+    const current = rateLimitMap.get(rateLimitKey)
+    if (current && now < current.resetTime) {
+      if (current.count >= maxRequests) {
+        return NextResponse.json(
+          { error: 'Too many requests. Please wait a moment.' },
+          { status: 429 }
+        )
+      }
+      current.count++
+    } else {
+      rateLimitMap.set(rateLimitKey, { count: 1, resetTime: now + windowMs })
+    }
+
     const { text } = await request.json()
     
     console.log('🔥 Transform API called with text:', text)
     
-    if (!text?.trim()) {
+    // Input validation
+    if (!text || typeof text !== 'string' || !text.trim()) {
       return NextResponse.json(
-        { error: 'Text is required' },
+        { error: 'Valid text is required' },
         { status: 400 }
       )
     }
 
-    // 🚨 COST PROTECTION: Limit input length
-    if (text.length > 500) {
+    // Length validation - increased to 2000 as requested
+    if (text.length > 2000) {
       return NextResponse.json(
-        { error: 'Text too long. Please keep it under 500 characters to manage costs.' },
+        { error: 'Text too long. Please keep it under 2000 characters.' },
         { status: 400 }
       )
     }
