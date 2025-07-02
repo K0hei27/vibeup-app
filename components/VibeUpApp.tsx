@@ -141,9 +141,17 @@ export default function VibeUpApp() {
       setShowResult(true)
       setIsLoading(false)
       
-      // Smooth scroll to result
+      // Optional gentle scroll to result - user can still scroll freely
       setTimeout(() => {
-        resultSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        if (resultSectionRef.current) {
+          const element = resultSectionRef.current
+          const elementTop = element.getBoundingClientRect().top + window.pageYOffset
+          const offset = 100 // Small offset to keep some context visible
+          window.scrollTo({ 
+            top: elementTop - offset, 
+            behavior: 'smooth' 
+          })
+        }
       }, 300)
       
     } catch (error) {
