@@ -322,6 +322,14 @@ export default function VibeUpApp() {
       setAuthEmail('')
       setAuthPassword('')
       setShowAuth(false)
+      
+      // If we have a transformation ready and user just signed up to save it, save it automatically
+      if (showResult && transformedText && keyPhrases.length > 0) {
+        // Small delay to ensure user state is fully set
+        setTimeout(() => {
+          saveSession()
+        }, 500)
+      }
     } catch (error: unknown) {
       console.error('Auth error:', error)
       
