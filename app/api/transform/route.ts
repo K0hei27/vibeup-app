@@ -65,43 +65,51 @@ export async function POST(request: NextRequest) {
     console.log('✅ Using Gemini API key:', apiKey.slice(0, 10) + '...')
 
     const prompt = `
-You are helping someone express messy thoughts more naturally. Transform this into something better but keep it casual and real.
+You are a communication expert helping someone transform raw thoughts into polished, natural expressions. Elevate their message while preserving authenticity.
 
 Original: "${text}"
 
-Make it:
-- Natural and conversational (not formal/corporate)
-- Keep the real emotion but express it better
-- Sound like how people actually talk
-- More thoughtful but still authentic
+Transform it to be:
+- More articulate and sophisticated without being overly formal
+- Clearer structure and better word choice
+- Professional yet natural tone
+- Grammatically correct and well-phrased
+- More impactful and engaging
 
-Then pick 3 key phrases that help.
+Guidelines:
+- Fix grammar and awkward phrasing
+- Use more precise vocabulary
+- Improve flow and readability  
+- Add sophistication while staying authentic
+- Make it sound educated but approachable
+
+Then identify 3 key improvements you made.
 
 Respond in JSON:
 {
-  "transformedText": "Your natural version here",
+  "transformedText": "Your refined version here",
   "keyPhrases": [
     {
-      "phrase": "key phrase from text",
-      "explanation": "Why it helps (4 words max)"
+      "phrase": "specific improvement made",
+      "explanation": "Why this enhances communication"
     },
     {
-      "phrase": "another phrase",
-      "explanation": "Benefit (4 words max)"
+      "phrase": "another key change",
+      "explanation": "How this improves clarity"
     },
     {
-      "phrase": "third phrase",
-      "explanation": "Why better (4 words max)"
+      "phrase": "third enhancement",
+      "explanation": "What this adds to impact"
     }
   ]
 }
 
-Good examples:
-- "I'm so annoyed" → "I'm finding this challenging"
-- "This sucks" → "This isn't working for me" 
-- "My boss is crazy" → "My boss keeps changing things"
+Example transformations:
+- "This app is super cool and helps you learn stuff" → "This application offers an innovative approach to skill development"
+- "I don't know why this keeps happening" → "I'm seeking to understand the underlying patterns here"
+- "We should probably maybe try something different" → "I recommend exploring alternative approaches"
 
-Keep it real and natural!
+Focus on elevation and refinement!
 `
 
     console.log('📡 Sending request to Gemini API...')
