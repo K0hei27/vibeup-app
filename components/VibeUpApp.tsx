@@ -766,10 +766,8 @@ export default function VibeUpApp() {
         .app-container {
           flex: 1;
           padding: 24px;
-          overflow-y: auto;
           background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
           position: relative;
-          min-height: 0;
           padding-bottom: env(safe-area-inset-bottom, 24px);
         }
 
